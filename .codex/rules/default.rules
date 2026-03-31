@@ -1,0 +1,4 @@
+# Execution safety rules for Codex
+prefix_rule(pattern = ["rm", "-rf"], decision = "deny", justification = "Dangerous delete blocked.")
+prefix_rule(pattern = ["git", "push", "--force"], decision = "deny", justification = "Force push blocked.")
+prefix_rule(pattern = ["git", "reset", "--hard"], decision = "deny", justification = "Hard reset blocked.")

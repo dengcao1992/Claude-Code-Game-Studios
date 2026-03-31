@@ -1,7 +1,7 @@
 <p align="center">
-  <h1 align="center">Claude Code Game Studios</h1>
+  <h1 align="center">Codex + Claude Game Studios</h1>
   <p align="center">
-    Turn a single Claude Code session into a full game development studio.
+    Turn a single Codex or Claude session into a full game development studio.
     <br />
     48 agents. 37 workflows. One coordinated AI team.
   </p>
@@ -13,7 +13,8 @@
   <a href=".claude/skills"><img src="https://img.shields.io/badge/skills-37-green" alt="37 Skills"></a>
   <a href=".claude/hooks"><img src="https://img.shields.io/badge/hooks-8-orange" alt="8 Hooks"></a>
   <a href=".claude/rules"><img src="https://img.shields.io/badge/rules-11-red" alt="11 Rules"></a>
-  <a href="https://docs.anthropic.com/en/docs/claude-code"><img src="https://img.shields.io/badge/built%20for-Claude%20Code-f5f5f5?logo=anthropic" alt="Built for Claude Code"></a>
+  <a href="https://github.com/openai/codex"><img src="https://img.shields.io/badge/compatible-Codex-412991" alt="Codex Compatible"></a>
+  <a href="https://docs.anthropic.com/en/docs/claude-code"><img src="https://img.shields.io/badge/also%20for-Claude%20Code-f5f5f5?logo=anthropic" alt="Also for Claude Code"></a>
   <a href="https://ko-fi.com/donchitos"><img src="https://img.shields.io/badge/Ko--fi-Support%20this%20project-ff5e5b?logo=ko-fi&logoColor=white" alt="Ko-fi"></a>
 </p>
 
@@ -112,7 +113,16 @@ Type `/` in Claude Code to access all 37 skills:
 **Team Orchestration** (coordinate multiple agents on a single feature)
 `/team-combat` `/team-narrative` `/team-ui` `/team-release` `/team-polish` `/team-audio` `/team-level`
 
-## Getting Started
+## Codex Migration Status
+
+This repository now supports **Codex** via a root-level `AGENTS.md` entrypoint while preserving the original Claude configuration (`CLAUDE.md` + `.claude/`).
+
+- **Codex** reads instructions from `AGENTS.md`
+- **Claude Code** continues using `CLAUDE.md` and `.claude/settings.json`
+- Codex-native assets are provided in `.agents/skills/` and `.codex/` (`agents`, `hooks`, `hooks.json`, `rules`)
+- `.claude/` is preserved as source assets, synchronized by `tools/sync-codex-assets.sh`
+
+## Getting Started (Claude Code)
 
 ### Prerequisites
 
@@ -143,6 +153,20 @@ All hooks fail gracefully if optional tools are missing — nothing breaks, you 
    - `/setup-engine godot 4.6` — configure your engine if you already know
    - `/project-stage-detect` — analyze an existing project
 
+
+## Getting Started (Codex)
+
+1. Open this repository in Codex.
+2. Start from `AGENTS.md` (root) as the orchestration entrypoint.
+3. Invoke skills by name (for example: `start`, `sprint-plan`, `code-review`) using `.agents/skills/*/SKILL.md`.
+4. Use subagents from `.codex/agents/*.toml`, execution rules from `.codex/rules/*.rules`, path standards from `.codex/rules/project-standards/*.md`, and hooks from `.codex/hooks.json`.
+5. Run `./tools/sync-codex-assets.sh` after changing `.claude` assets to keep Codex layout updated.
+
+### Multi-agent orchestration in Codex
+
+Codex subagents are explicit. You should name them directly in prompts (for example, ask `game_designer` to propose options, then `gameplay_programmer` to implement).
+See `docs/CODEX-MULTI-AGENT-USAGE.md` for concrete prompt templates and orchestration patterns.
+
 ## Upgrading
 
 Already using an older version of this template? See [UPGRADING.md](UPGRADING.md)
@@ -152,19 +176,22 @@ versions, and which files are safe to overwrite vs. which need a manual merge.
 ## Project Structure
 
 ```
-CLAUDE.md                           # Master configuration
-.claude/
-  settings.json                     # Hooks, permissions, safety rules
-  agents/                           # 48 agent definitions (markdown + YAML frontmatter)
-  skills/                           # 37 slash commands (subdirectory per skill)
-  hooks/                            # 8 hook scripts (bash, cross-platform)
-  rules/                            # 11 path-scoped coding standards
-  docs/
-    quick-start.md                  # Detailed usage guide
-    agent-roster.md                 # Full agent table with domains
-    agent-coordination-map.md       # Delegation and escalation paths
-    setup-requirements.md           # Prerequisites and platform notes
-    templates/                      # 28 document templates
+CLAUDE.md                           # Master configuration (Claude Code)
+AGENTS.md                           # Project instructions for Codex
+.claude/                            # Source assets from original Claude layout
+  settings.json
+  agents/
+  skills/
+  hooks/
+  rules/
+  docs/templates/
+.agents/                            # Codex skills location
+  skills/
+.codex/                             # Codex runtime configuration
+  agents/                           # Subagents (*.toml)
+  hooks/                            # Hook scripts
+  hooks.json                        # Hook wiring
+  rules/                            # Execution rules (*.rules)
 src/                                # Game source code
 assets/                             # Art, audio, VFX, shaders, data files
 design/                             # GDDs, narrative docs, level designs
